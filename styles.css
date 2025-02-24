@@ -1,0 +1,466 @@
+@import url('https://fonts.googleapis.com/css2?family=Work+Sans:ital,wght@0,100..900;1,100..900&display=swap');
+
+body {
+    margin: 0;
+    padding: 20px;
+    height: 100vh;
+    max-width: 100vw;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    /* font-family: Arial, sans-serif; */
+    font-family: "Work Sans", serif;
+    font-optical-sizing: auto;
+    font-weight: 500;
+    font-style: normal;
+    font-size: 16px;
+
+}
+
+.table-container {
+    height: calc(100vh - 330px);
+    width: 100%;
+    table-layout: fixed;
+    overflow-y: auto;
+    /* border: 1px solid #ccc; */
+    /* border-radius: 8px; */
+    /* box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); */
+    flex-grow: 1;
+}
+
+input[type="radio"] {
+    display: none;
+}
+
+.input-wrapper {
+    position: relative;
+    display: flex;
+}
+
+.input-wrapper:before {
+    content: '';
+    background-image: url('data:image/svg+xml,<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M8.75 3.125C5.6434 3.125 3.125 5.6434 3.125 8.75C3.125 11.8566 5.6434 14.375 8.75 14.375C10.3035 14.375 11.7089 13.7461 12.7275 12.7275C13.7461 11.7089 14.375 10.3035 14.375 8.75C14.375 5.6434 11.8566 3.125 8.75 3.125ZM1.875 8.75C1.875 4.95304 4.95304 1.875 8.75 1.875C12.547 1.875 15.625 4.95304 15.625 8.75C15.625 10.4232 15.0266 11.9575 14.0333 13.1494L17.9419 17.0581C18.186 17.3021 18.186 17.6979 17.9419 17.9419C17.6979 18.186 17.3021 18.186 17.0581 17.9419L13.1494 14.0333C11.9575 15.0266 10.4232 15.625 8.75 15.625C4.95304 15.625 1.875 12.547 1.875 8.75Z" fill="%232E3333"/></svg>');
+    background-repeat: no-repeat;
+    background-position: center;
+    width: 20px;
+    height: 20px;
+    display: block;
+    position: absolute;
+    top: 12px;
+    left: 8px;
+}
+
+.input-group label {
+    /* display: block; */
+    padding: 0.5rem 1rem;
+    color: #0d6efd;
+    background: 0 0;
+    border: 0;
+    border-radius: 0.375rem;
+    cursor: pointer;
+    text-decoration: none;
+    transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #000;
+
+
+}
+
+input[type="radio"]:checked+label {
+    cursor: default;
+    /* color: #fff; */
+    /* background-color: #0d6efd; */
+    background-color: #fff;
+    border-bottom-right-radius: 0;
+    border-bottom-left-radius: 0;
+    /* border: 1px solid #1c9dc1; */
+    position: relative;
+    box-shadow: inset 0px 0px 0px 1px #ccc;
+    font-weight: 600;
+
+    padding: 10px 38px;
+}
+
+input[type="radio"]:checked+label::after {
+    content: "";
+    width: calc(100% - 2px);
+    height: 12px;
+    display: block;
+    position: absolute;
+    bottom: -7px;
+    left: 0;
+    background-color: #fff;
+    border-left: 1px solid #ccc;
+    border-right: 1px solid #ccc;
+}
+
+input[type="radio"]+label:first-of-type {
+    margin-left: 12px;
+}
+
+.header th {
+
+    border-bottom: 2px solid #e5e7eb;
+}
+
+.tabHeader {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding-bottom: 6px;
+    padding-top: 12px;
+    margin-bottom: 12px;
+    border-bottom: 1px solid #ccc;
+}
+
+.tabHeader label {
+    border-radius: 8px;
+    background: #F0EFEF;
+    border: 1px solid #F0EFEF;
+    border: 0;
+    color: rgb(46, 51, 51);
+    font-family: "Work Sans", serif;
+    font-style: normal;
+    font-weight: 400;
+    font-size: 1rem;
+    line-height: 1.75rem;
+    padding: 10px 24px;
+    margin-bottom: 0;
+    transition: all ease 0.2s;
+    cursor: pointer;
+    padding: 10px 38px;
+}
+
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 0;
+}
+
+table.sortable {
+    width: 100%;
+    table-layout: fixed;
+    border-collapse: collapse;
+    border: none;
+    border-radius: 8px;
+}
+
+table.sortable th {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    padding: 0 12px;
+    text-align: center;
+    background-color: #F0EFEF;
+    color: rgb(46, 51, 51);
+    font-weight: bold;
+    font-size: 0.9rem;
+    padding: 8px 12px !important;
+    font-weight: 500;
+
+
+}
+
+table.sortable th button {
+    width: 100%;
+    padding: 8px;
+    margin: 0;
+    background: transparent;
+    border: none;
+    color: rgb(46, 51, 51);
+    font-size: 1rem;
+    font-weight: bold;
+    text-align: center;
+    outline: none;
+    cursor: pointer;
+    font-weight: 500;
+    font-family: "Work Sans", serif;
+}
+
+table.sortable th button span {
+    position: absolute;
+    right: 8px;
+}
+
+table.sortable td,
+table.sortable th {
+    padding: 14px 12px;
+    text-align: center;
+    vertical-align: middle;
+}
+
+table.sortable td {
+    white-space: nowrap;
+    overflow: hidden;
+    font-size: 0.9rem;
+}
+
+table.sortable td.num {
+    text-align: right;
+}
+
+table.sortable tbody tr {
+    transition: all 0.3s ease;
+    border-bottom: 1px solid rgba(51, 51, 51, 0.1);
+}
+
+table.sortable tbody tr:nth-child(odd) {
+    background-color: #ffffff;
+}
+
+table.sortable tbody tr:nth-child(even) {
+    background-color: rgb(240, 239, 239);
+}
+
+table.sortable tbody tr:hover {
+    background-color: #d3e3fd;
+}
+
+table.sortable th[aria-sort="descending"] span::after {
+    content: "▼";
+    color: currentcolor;
+    font-size: 0.8em;
+    top: 0;
+}
+
+table.sortable th[aria-sort="ascending"] span::after {
+    content: "▲";
+    color: currentcolor;
+    font-size: 0.8em;
+    top: 0;
+}
+
+table.show-unsorted-icon th:not([aria-sort]) button span::after {
+    content: "♢";
+    color: currentcolor;
+    font-size: 0.8em;
+    position: relative;
+    top: -3px;
+    left: -4px;
+}
+
+.buttonSaveCSV,
+.buttonCopyToClipboard,
+.buttonSaveChart,
+#idFilterButton,
+#idRemoveFilterKeyword {
+    padding: 14px 32px;
+    background-color: #088664;
+    box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.05);
+    border-radius: 8px;
+    text-align: center;
+    font-family: "Work Sans";
+    font-style: normal;
+    font-weight: 600;
+    font-size: 0.875rem;
+    line-height: 0.875rem;
+    color: #FFFFFF;
+    cursor: pointer;
+    border: none;
+    transition: background-color 0.3s ease;
+}
+
+.buttonSaveCSV,
+.buttonCopyToClipboard{
+    padding-left: 18px;
+}
+
+.buttonSaveCSV:disabled,
+.buttonCopyToClipboard:disabled,
+.buttonSaveChart :disabled,
+#idFilterButton:disabled,
+#idRemoveFilterKeyword:disabled {
+    opacity: 0.7;
+    cursor: default;
+    color: #e3e3e3;
+    filter: grayscale(90%);
+}
+
+.buttonSaveCSV svg,
+.buttonCopyToClipboard svg,
+.buttonSaveChart svg {
+    width: 24px;
+    height: 24px;
+    position: relative;
+    fill: #fff;
+    margin: -8px 8px -8px 0;
+}
+
+#idFilterButton:hover {
+    background-color: #087356;
+}
+
+.buttonSaveCSV {
+    background-color: #038ba2;
+}
+
+.buttonSaveCSV:hover {
+    background-color: #2563eb;
+}
+
+.buttonSaveChart {
+    background-color: #10B981;
+}
+
+.buttonSaveChart:hover {
+    background-color: #059669;
+}
+
+.buttonCopyToClipboard {
+    background-color: #f44d25;
+}
+
+.buttonCopyToClipboard:hover {
+    background-color: #f87171;
+}
+
+.buttonSaveCSV:active,
+.buttonCopyToClipboard:active,
+.buttonSaveChart:active {
+    transform: scale(0.97);
+    box-shadow: 3px 2px 22px 1px rgba(0, 0, 0, 0.24);
+}
+
+#idHead {
+    display: flex;
+    justify-content: flex-start;
+    align-items: stretch;
+    gap: 20px;
+    padding-bottom: 8px;
+    max-width: 768px;
+}
+
+#idTablestats,
+#idDivConfig {
+    /* width: 48%; */
+    /* padding: 20px; */
+    /* background-color: #f9f9f9; */
+    /* border-radius: 10px; */
+    /* border: 1px solid #e0e0e0; */
+    /* box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); */
+    font-size: 1rem;
+    flex-grow: 1;
+    line-height: 1.2rem;
+}
+
+#idTablestats {
+    padding-right: 24px;
+    margin-right: 24px;
+}
+
+#idTableTotalByURL,
+#idTableTotalByURL td {
+    border: none;
+    font-size: small;
+}
+
+#idTableConfig {
+    border: none;
+}
+
+#idTableConfig td {
+    padding-right: 15px;
+    max-width: 300px;
+    white-space: nowrap;
+    overflow: hidden;
+    border: none;
+    font-size: 1rem;
+    color: #343a40;
+}
+
+#idTableConfig a {
+    text-decoration: underline;
+    color: #343a40;
+}
+
+
+.leftAlign {
+    text-align: left;
+}
+
+.rightAlign {
+    text-align: right;
+}
+
+#header_right {
+    top: 10px;
+    right: 20px;
+    height: auto;
+    padding-left: 20px;
+    vertical-align: top;
+    background-color: white;
+    position: absolute;
+}
+
+hr {
+    margin: 10px 0;
+    border: none;
+    border-top: 1px solid #ccc;
+}
+
+#download {
+    margin-bottom: 20px;
+}
+
+#table-wrapper {
+    display: block;
+}
+
+fieldset.groupby {
+    float: left;
+    width: 100px;
+}
+
+#idChartHint {
+    position: absolute;
+    top: 300px;
+    left: 300px;
+    width: 500px;
+    padding: 30px;
+    display: none;
+    background-color: #FFFACD;
+    color: black;
+    font-size: medium;
+    border-radius: 6px;
+    text-align: center;
+    word-wrap: break-word;
+}
+
+.date-wrapper {
+    display: grid;
+    grid-template-columns: 75% 25%;
+    gap: 20px;
+}
+
+.table-container table a {
+    color: black;
+    text-decoration: underline;
+    transition: color 0.2s ease;
+}
+
+.table-container table a:hover {
+    color: #0056b3;
+    font-weight: bold;
+}
+
+@media (max-width: 768px) {
+
+    table.sortable th,
+    table.sortable td {
+        font-size: 0.875em;
+    }
+
+    #idHead {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .buttonSaveCSV,
+    .buttonCopyToClipboard,
+    .buttonSaveChart {
+        margin-top: 5px;
+    }
+}

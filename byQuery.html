@@ -1,0 +1,958 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Query Performance | GSC Helper</title>
+	<base target="_blank">
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<link rel="stylesheet" type="text/css" href="styles.css">
+</head>
+
+<body>
+	<style>
+		#idTableKeywords table {
+			table-layout: auto;
+			width: 100%;
+		}
+
+		#idTable1Word table {
+			table-layout: auto;
+			width: 100%;
+		}
+
+		#idTableKeywords th:nth-child(2),
+		#idTableKeywords td:nth-child(2),
+		#Table1WordHeader td:nth-child(2) {
+			width: 340px;
+			white-space: nowrap;
+			text-overflow: ellipsis;
+			overflow: hidden;
+			text-align: left;
+		}
+
+		#idTableKeywords th {
+			white-space: normal;
+			word-wrap: break-word;
+		}
+
+		#idTableKeywords td:not(:nth-child(2)) {
+			white-space: nowrap;
+			text-overflow: ellipsis;
+			overflow: hidden;
+			width: auto;
+		}
+
+		td.chart {
+			/*left*/
+			/*background-image: linear-gradient(to right, rgba(0, 150, 0, 1) 0%, rgba(0, 175, 0, 1) 17%, rgba(0, 190, 0, 1) 33%, rgba(82, 210, 82, 1) 67%, rgba(131, 230, 131, 1) 83%, rgba(180, 221, 180, 1) 100%); */
+			/*background-image: linear-gradient(to right, rgba(0, 150, 0, 1) 0%, rgba(0, 150, 0, 1) 0%); 	*/
+			/*background-image: linear-gradient(to right, #009600 0%, #70A670 100%); */
+			/*background-image: linear-gradient(to right, #4285f4 0%, #62A5FF 100%); */
+			background-repeat: no-repeat;
+		}
+
+		td.rownumber {
+			width: 40px;
+		}
+
+		.divfilter * {
+			display: inline-block;
+			padding-left: 6px;
+			margin-left: 16px;
+			cursor: auto;
+		}
+
+		#idFilterLabel {
+			color: black;
+		}
+
+		#idFilterNGram {
+			display: none;
+		}
+
+		#idFilteredTable {
+			display: none;
+		}
+
+		.divfilter-keyword {
+			display: flex;
+			margin-left: 0px;
+			padding-left: 0px;
+			gap:8px;
+			align-items: center;
+			justify-content: center;
+		}
+		.divfilter-keyword + button{
+			margin-left: auto;
+		}
+		.divfilter-keyword label {
+			margin-left: 0px;
+			padding-left: 0px;
+		}
+		.divfilter-keyword input {
+			display: flex;
+			flex-direction: row;
+			align-items: center;
+			padding: 12px 12px 12px 48px;
+			gap: 8px;
+			border: 1px solid #d5d6d6;
+			background: #FFFFFF;
+			border-radius: 8px;
+			font-size: 1rem;
+			font-family: "Work Sans", serif;
+		}
+
+		.divfilter-keyword input:focus-visible {
+	outline: 0;
+	border: 1px solid #2f7d69;
+	}
+
+		.download-container {
+			padding: 8px 0 24px 0;
+			display: flex;
+			flex-direction: row;
+			align-items: center;
+			align-content: center;
+			justify-content: flex-start;
+			gap: 8px;
+
+		}
+
+		button:disabled {
+			background-color: #CCC;
+		}
+	</style>
+	<div id="header_right">
+		<div id="idDivLogo">
+			<a href="https://www.searchanalyzer.io"
+				title="Unlock the full potential of Google Search Console with searchanalyzer.io. Start your free trial today!">
+				<img src="logo-full.png" width=280px height=70px />
+			</a>
+		</div>
+	</div>
+
+	<div id="idHead">
+		<div id="idTablestats"><span><b>Table stats:</b></span>
+			<table id='idTableTotal'>
+				<tbody>
+					<tr
+						title='The total clicks value is sourced directly from the GSC chart. This represents the most accurate ("true") count of clicks for your current configuration.'>
+						<td class='leftAlign'>Total clicks reported by GSC</td>
+						<td class="rightAlign"><span id="idTotalClicks">5,276</span></td>
+					</tr>
+					<tr title='The sum of clicks is the total of all clicks listed in the table below.'>
+						<td class='leftAlign'>Sum of clicks in the table</td>
+						<td class="rightAlign"><span id="idReportedClicks">1,800</span></td>
+					</tr>
+					<tr
+						title='Query Clicks Coverage represents the percentage of total clicks in Google Search Console (GSC) that are attributed to specific queries. This coverage is often limited due to factors such as Google’s anonymization of certain queries and the 1,000-row data limit in the GSC interface.&#013;On average, the overall website Query Clicks Coverage tends to be around 30%. However, individual pages often have significantly higher coverage rates.'>
+						<td class='leftAlign'>Query clicks coverage</td>
+						<td class="rightAlign"><span id="idClicksCverage" style='font-weight:bold'>34,12%</span></td>
+					</tr>
+					<tr title='Reported queries refer to the number of search terms displayed in the table.'>
+						<td class='leftAlign'>Reported queries</td>
+						<td class="rightAlign"><span id="idReportedQueries">1,000</span></td>
+					</tr>
+					<tr
+						title='Reported queries with 1+ clicks indicate the number of queries that generated at least one click.'>
+						<td class='leftAlign'>Reported queries with 1+ clicks</td>
+						<td class="rightAlign"><span id="idReportedQueries1plus">490</span></td>
+					</tr>
+					<tr title='Last reported query clicks show the number of clicks for the final row in the table.'>
+						<td class='leftAlign'>Last reported query clicks</td>
+						<td class="rightAlign"><span id="idLastQueryStats">0</span></td>
+					</tr>
+					<tr title='Total impressions reflect the number of impressions displayed in the GSC chart.'>
+						<td class='leftAlign'>Total impressions</td>
+						<td class="rightAlign"><span id="idTotalImpressions">710,719</span></td>
+					</tr>
+					<tr
+						title='Since Google reports max 1,000 queries, we only get partial impressions data in most cases. This value is the sum of all query impressions in the table.'>
+						<td class='leftAlign'>Sum of impressions in the table</td>
+						<td class="rightAlign"><span id="idReportedImpressions">421,813</span></td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+
+		<div id='idDivConfig'>
+			<span><b>Your configuration:</b></span>
+			<table id='idTableConfig'>
+				<tbody>
+					<tr>
+						<td class='leftAlign'>Query:</td>
+						<td class="rightAlign"><span id="idConfQuery">not set</span></td>
+					</tr>
+					<tr>
+						<td class='leftAlign'>Page:</td>
+						<td class="rightAlign"><span id="idConfPage">not set</span></td>
+					</tr>
+					<tr>
+						<td class='leftAlign'>Country:</td>
+						<td class="rightAlign"><span id="idConfCountry">not set</span></td>
+					</tr>
+					<tr>
+						<td class='leftAlign'>Device:</td>
+						<td class="rightAlign"><span id="idConfDevice">not set</span></td>
+					</tr>
+					<tr>
+						<td class='leftAlign'>Search appearance:</td>
+						<td class="rightAlign"><span id="idConfSearchAppearance">not set</span></td>
+					</tr>
+					<tr>
+						<td class='leftAlign'>Period:</td>
+						<td class="rightAlign"><span id="idConfPeriod">not set</span></td>
+					</tr>
+					<tr>
+						<td class='leftAlign'>Property:</td>
+						<td class="rightAlign"><span id="idConfProperty">not set</span></td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+
+	<div class="container">
+		<div class="tabHeader">
+			<input checked id="tab-btn-0" name="tab-btn" type="radio" value="">
+			<label id="idLabelTab0" for="tab-btn-0">By Query</label>
+			<input id="tab-btn-1" name="tab-btn" type="radio" value="">
+			<label id="idLabelTab1" for="tab-btn-1">By 1-gram</label>
+			<input id="tab-btn-2" name="tab-btn" type="radio" value="">
+			<label id="idLabelTab2" for="tab-btn-2">By 2-gram</label>
+			<input id="tab-btn-3" name="tab-btn" type="radio" value="">
+			<label id="idLabelTab3" for="tab-btn-3">By 3-gram</label>
+		</div>
+	</div>
+
+	<div id="idTab0" class="tab-content">
+		<div id="idDownload0" class="download-container">
+			
+
+			<div id="idFilterKeyword" class="divfilter-keyword">
+				
+					<label>Filter Search Queries for: </label>
+					<div class="input-wrapper">
+					<input type="text"
+					id="idFilterText" placeholder="Click 'Filter' to apply" />
+				</div>	
+				<button id="idFilterButton" type="button">
+					Filter
+				</button>
+				<button id="idRemoveFilterKeyword" type="button">
+					Remove filter
+				</button>
+			</div>
+
+			<button id="idSaveCSV" class="buttonSaveCSV" type="button">
+				<svg viewBox="0 0 20 20" fill="currentColor" width="12" height="12" class="mr-2">
+					<path fill-rule="evenodd"
+						d="M6 2a2 2 0 00-2 2v12a2 2 0 002 2h8a2 2 0 002-2V7.414A2 2 0 0015.414 6L12 2.586A2 2 0 0010.586 2H6zm5 6a1 1 0 10-2 0v3.586l-1.293-1.293a1 1 0 10-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L11 11.586V8z"
+						clip-rule="evenodd"></path>
+				</svg>
+				Save table as CSV
+			</button>
+			<button id="idCopyToClipboard" class="buttonCopyToClipboard" type="button">
+				<svg enable-background="new 0 0 512 512" version="1.1" viewBox="0 0 512 512" xml:space="preserve" xmlns="http://www.w3.org/2000/svg">
+					<path d="m256 122.01c-3.9-3.9-8.92-5.01-13.93-5.01h-166.58c-11.14 0-25.63 6.69-25.63 17.27v352.66c0 11.14 14.48 25.07 25.63 25.07h264.08c11.14 0 16.71-14.49 16.71-25.07v-254.05c0-5.01-0.56-9.47-4.46-13.37l-95.82-97.5zm55.15 111.98h-71.87v-71.87l71.87 71.87zm-216.72 233.99v-311.99h105.85v95.83c0 11.14 10.03 21.17 21.17 21.17h95.83v194.99h-222.85zm364.36-367.7-96.94-96.94c-3.34-2.78-6.68-3.34-11.14-3.34h-166.58c-9.47 0-17.27 5.01-17.27 13.93v53.48c0 9.47 7.24 16.71 16.71 16.71s16.71-7.8 16.71-16.71v-33.98h117v94.15c0 9.47 7.8 17.27 17.27 17.27h94.16v206.14h-22.85c-9.47 0-16.71 7.24-16.71 16.71s7.8 16.71 16.71 16.71h42.34c9.47 0 13.93-8.36 13.93-17.83v-254.04c0.01-4.46-0.55-8.91-3.34-12.26zm-108.08-61.28 71.87 72.43h-71.87v-72.43z"/>
+				</svg>
+				Copy data to Clipboard
+			</button>
+		</div>
+
+		<div id="idFilterNGram" class="divfilter">
+			<label id="idFilterLabel">Filter:</label>
+			<label id="idFilterNGramCondition"></label>
+			<button id="idRemoveFilterNGram" type="button">
+				Remove filter
+			</button>
+		</div>
+
+
+
+		<div id="idFullTable" class="table-container">
+			<table id="idTableKeywords" class="sortable show-unsorted-icon modern-table">
+				<thead>
+					<tr id="TableKeywordsHeader" class="header">
+						<th class="num">
+							<button>
+								Row #
+								<span aria-hidden="true"></span>
+							</button>
+						</th>
+						<th>Top queries</th>
+						<th aria-sort="descending" class="num">
+							<button>
+								Clicks
+								<span aria-hidden="true"></span>
+							</button>
+						</th>
+						<th class="num">
+							<button>
+								Impressions
+								<span aria-hidden="true"></span>
+							</button>
+						</th>
+						<th class="num">
+							<button>
+								CTR
+								<span aria-hidden="true"></span>
+							</button>
+						</th>
+						<th class="num">
+							<button>
+								Position
+								<span aria-hidden="true"></span>
+							</button>
+						</th>
+						<th title="Total Number of Words in the Query.">Word count</th>
+						<th title="Rounded Ranking Position of the Query.">Rounded position</th>
+						<th
+							title="Search Engine Results Page Number (on a 10 Results/Page Basis). This is a rough indicator, no real SERP data is used!">
+							SERP page</th>
+						<th title="Rounded Impressions.">Rounded impressions</th>
+						<th
+							title="Percentage of Clicks Attributed to This Query (Calculated as [Keyword Clicks] / [Total Clicks reported by GSC]).">
+							Traffic Share</th>
+						<th title="Cumulative Traffic Share Percentage of All Keywords So Far.">Accumulated Traffic
+							Share</th>
+					</tr>
+
+				</thead>
+				<tbody id="idTableKeywordsBody">
+
+					<tr>
+						<td>1</td>
+						<td>gsc helper</td>
+						<td>54</td>
+						<td>168</td>
+						<td>32.1%</td>
+						<td>1.6</td>
+						<td>2</td>
+						<td>2</td>
+						<td>1</td>
+						<td>170</td>
+						<td>1.02%</td>
+						<td>1.02%</td>
+					</tr>
+					<tr>
+						<td>2</td>
+						<td>stephan czysch</td>
+						<td>54</td>
+						<td>127</td>
+						<td>42.5%</td>
+						<td>1</td>
+						<td>2</td>
+						<td>1</td>
+						<td>1</td>
+						<td>130</td>
+						<td>1.02%</td>
+						<td>2.05%</td>
+					</tr>
+					<tr>
+						<td>3</td>
+						<td>robots noindex nofollow</td>
+						<td>52</td>
+						<td>266</td>
+						<td>19.5%</td>
+						<td>3.8</td>
+						<td>3</td>
+						<td>38</td>
+						<td>4</td>
+						<td>270</td>
+						<td>0.99%</td>
+						<td>3.03%</td>
+					</tr>
+					<tr>
+						<td>4</td>
+						<td>google rezensionen schreiben</td>
+						<td>36</td>
+						<td>3,320</td>
+						<td>1.1%</td>
+						<td>6.7</td>
+						<td>3</td>
+						<td>7</td>
+						<td>1</td>
+						<td>3320</td>
+						<td>0.68%</td>
+						<td>3.71%</td>
+					</tr>
+					<tr>
+						<td>5</td>
+						<td>wie genau sind google stoßzeiten</td>
+						<td>34</td>
+						<td>169</td>
+						<td>20.1%</td>
+						<td>1.3</td>
+						<td>5</td>
+						<td>1</td>
+						<td>1</td>
+						<td>170</td>
+						<td>0.64%</td>
+						<td>4.36%</td>
+					</tr>
+					<tr>
+						<td>6</td>
+						<td>meine rezensionen</td>
+						<td>33</td>
+						<td>7,535</td>
+						<td>0.4%</td>
+						<td>5.8</td>
+						<td>2</td>
+						<td>6</td>
+						<td>1</td>
+						<td>7540</td>
+						<td>0.63%</td>
+						<td>4.98%</td>
+					</tr>
+					<tr>
+						<td>7</td>
+						<td>google bewertung abgeben</td>
+						<td>33</td>
+						<td>5,676</td>
+						<td>0.6%</td>
+						<td>6.7</td>
+						<td>3</td>
+						<td>7</td>
+						<td>1</td>
+						<td>5680</td>
+						<td>0.63%</td>
+						<td>5.61%</td>
+					</tr>
+					<tr>
+						<td>8</td>
+						<td>google eintrag ändern</td>
+						<td>31</td>
+						<td>1,148</td>
+						<td>2.7%</td>
+						<td>4.1</td>
+						<td>3</td>
+						<td>4</td>
+						<td>1</td>
+						<td>1150</td>
+						<td>0.59%</td>
+						<td>6.20%</td>
+					</tr>
+					<tr>
+						<td>9</td>
+						<td>google maps eintrag ändern</td>
+						<td>26</td>
+						<td>434</td>
+						<td>6%</td>
+						<td>3.9</td>
+						<td>4</td>
+						<td>4</td>
+						<td>1</td>
+						<td>430</td>
+						<td>0.49%</td>
+						<td>6.69%</td>
+					</tr>
+					<tr>
+						<td>10</td>
+						<td>meta robots noindex nofollow</td>
+						<td>24</td>
+						<td>126</td>
+						<td>19%</td>
+						<td>2.8</td>
+						<td>4</td>
+						<td>29</td>
+						<td>3</td>
+						<td>130</td>
+						<td>0.45%</td>
+						<td>7.15%</td>
+					</tr>
+					<tr>
+						<td>11</td>
+						<td>meine rezensionen ansehen</td>
+						<td>22</td>
+						<td>583</td>
+						<td>3.8%</td>
+						<td>5.3</td>
+						<td>3</td>
+						<td>5</td>
+						<td>1</td>
+						<td>580</td>
+						<td>0.42%</td>
+						<td>7.56%</td>
+					</tr>
+					<!-- table content is repeting from here (just placholder data) -->
+					<tr>
+						<td>1</td>
+						<td>gsc helper</td>
+						<td>54</td>
+						<td>168</td>
+						<td>32.1%</td>
+						<td>1.6</td>
+						<td>2</td>
+						<td>2</td>
+						<td>1</td>
+						<td>170</td>
+						<td>1.02%</td>
+						<td>1.02%</td>
+					</tr>
+					<tr>
+						<td>2</td>
+						<td>stephan czysch</td>
+						<td>54</td>
+						<td>127</td>
+						<td>42.5%</td>
+						<td>1</td>
+						<td>2</td>
+						<td>1</td>
+						<td>1</td>
+						<td>130</td>
+						<td>1.02%</td>
+						<td>2.05%</td>
+					</tr>
+					<tr>
+						<td>3</td>
+						<td>robots noindex nofollow</td>
+						<td>52</td>
+						<td>266</td>
+						<td>19.5%</td>
+						<td>3.8</td>
+						<td>3</td>
+						<td>38</td>
+						<td>4</td>
+						<td>270</td>
+						<td>0.99%</td>
+						<td>3.03%</td>
+					</tr>
+					<tr>
+						<td>4</td>
+						<td>google rezensionen schreiben</td>
+						<td>36</td>
+						<td>3,320</td>
+						<td>1.1%</td>
+						<td>6.7</td>
+						<td>3</td>
+						<td>7</td>
+						<td>1</td>
+						<td>3320</td>
+						<td>0.68%</td>
+						<td>3.71%</td>
+					</tr>
+					<tr>
+						<td>5</td>
+						<td>wie genau sind google stoßzeiten</td>
+						<td>34</td>
+						<td>169</td>
+						<td>20.1%</td>
+						<td>1.3</td>
+						<td>5</td>
+						<td>1</td>
+						<td>1</td>
+						<td>170</td>
+						<td>0.64%</td>
+						<td>4.36%</td>
+					</tr>
+					<tr>
+						<td>6</td>
+						<td>meine rezensionen</td>
+						<td>33</td>
+						<td>7,535</td>
+						<td>0.4%</td>
+						<td>5.8</td>
+						<td>2</td>
+						<td>6</td>
+						<td>1</td>
+						<td>7540</td>
+						<td>0.63%</td>
+						<td>4.98%</td>
+					</tr>
+					<tr>
+						<td>7</td>
+						<td>google bewertung abgeben</td>
+						<td>33</td>
+						<td>5,676</td>
+						<td>0.6%</td>
+						<td>6.7</td>
+						<td>3</td>
+						<td>7</td>
+						<td>1</td>
+						<td>5680</td>
+						<td>0.63%</td>
+						<td>5.61%</td>
+					</tr>
+					<tr>
+						<td>8</td>
+						<td>google eintrag ändern</td>
+						<td>31</td>
+						<td>1,148</td>
+						<td>2.7%</td>
+						<td>4.1</td>
+						<td>3</td>
+						<td>4</td>
+						<td>1</td>
+						<td>1150</td>
+						<td>0.59%</td>
+						<td>6.20%</td>
+					</tr>
+					<tr>
+						<td>9</td>
+						<td>google maps eintrag ändern</td>
+						<td>26</td>
+						<td>434</td>
+						<td>6%</td>
+						<td>3.9</td>
+						<td>4</td>
+						<td>4</td>
+						<td>1</td>
+						<td>430</td>
+						<td>0.49%</td>
+						<td>6.69%</td>
+					</tr>
+					<tr>
+						<td>10</td>
+						<td>meta robots noindex nofollow</td>
+						<td>24</td>
+						<td>126</td>
+						<td>19%</td>
+						<td>2.8</td>
+						<td>4</td>
+						<td>29</td>
+						<td>3</td>
+						<td>130</td>
+						<td>0.45%</td>
+						<td>7.15%</td>
+					</tr>
+					<tr>
+						<td>11</td>
+						<td>meine rezensionen ansehen</td>
+						<td>22</td>
+						<td>583</td>
+						<td>3.8%</td>
+						<td>5.3</td>
+						<td>3</td>
+						<td>5</td>
+						<td>1</td>
+						<td>580</td>
+						<td>0.42%</td>
+						<td>7.56%</td>
+					</tr>
+
+
+
+				</tbody>
+			</table>
+		</div>
+
+		<div id="idFilteredTable" class="table-container">
+			<table id="idFilteredTableKeywords" class="sortable show-unsorted-icon modern-table">
+				<thead>
+					<tr id="TableFilteredKeywordsHeader" class="header">
+						<th class="num">
+							<button>
+								Row #
+								<span aria-hidden="true"></span>
+							</button>
+						</th>
+						<th>Top queries</th>
+						<th aria-sort="descending" class="num">
+							<button>
+								Clicks
+								<span aria-hidden="true"></span>
+							</button>
+						</th>
+						<th class="num">
+							<button>
+								Impressions
+								<span aria-hidden="true"></span>
+							</button>
+						</th>
+						<th class="num">
+							<button>
+								CTR
+								<span aria-hidden="true"></span>
+							</button>
+						</th>
+						<th class="num">
+							<button>
+								Position
+								<span aria-hidden="true"></span>
+							</button>
+						</th>
+						<th title="Total Number of Words in the Query.">Word count</th>
+						<th title="Rounded Ranking Position of the Query.">Rounded position</th>
+						<th
+							title="Search Engine Results Page Number (on a 10 Results/Page Basis). This is a rough indicator, no real SERP data is used!">
+							SERP page</th>
+						<th title="Rounded Impressions.">Rounded impressions</th>
+						<th
+							title="Percentage of Clicks Attributed to This Query (Calculated as [Keyword Clicks] / [Total Clicks reported by GSC]).">
+							Traffic Share</th>
+					</tr>
+
+				</thead>
+				<tbody id="idFilteredTableKeywordsBody">
+				</tbody>
+			</table>
+		</div>
+	</div>
+
+	<div id='idTab1' class="tab-content">
+		<div id="idDownload1" class="download-container">
+			<div class="buttonContainer">
+				<button id="idSaveCSV1Gram" class="buttonSaveCSV" type="button">
+					<svg viewBox="0 0 20 20" fill="currentColor" width="12" height="12" class="mr-2">
+						<path fill-rule="evenodd"
+							d="M6 2a2 2 0 00-2 2v12a2 2 0 002 2h8a2 2 0 002-2V7.414A2 2 0 0015.414 6L12 2.586A2 2 0 0010.586 2H6zm5 6a1 1 0 10-2 0v3.586l-1.293-1.293a1 1 0 10-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L11 11.586V8z"
+							clip-rule="evenodd"></path>
+					</svg>
+					Save table as CSV
+				</button>
+				<button id="idCopyToClipboard1Gram" class="buttonCopyToClipboard" type="button">
+<svg enable-background="new 0 0 512 512" version="1.1" viewBox="0 0 512 512" xml:space="preserve" xmlns="http://www.w3.org/2000/svg">
+	<path d="m256 122.01c-3.9-3.9-8.92-5.01-13.93-5.01h-166.58c-11.14 0-25.63 6.69-25.63 17.27v352.66c0 11.14 14.48 25.07 25.63 25.07h264.08c11.14 0 16.71-14.49 16.71-25.07v-254.05c0-5.01-0.56-9.47-4.46-13.37l-95.82-97.5zm55.15 111.98h-71.87v-71.87l71.87 71.87zm-216.72 233.99v-311.99h105.85v95.83c0 11.14 10.03 21.17 21.17 21.17h95.83v194.99h-222.85zm364.36-367.7-96.94-96.94c-3.34-2.78-6.68-3.34-11.14-3.34h-166.58c-9.47 0-17.27 5.01-17.27 13.93v53.48c0 9.47 7.24 16.71 16.71 16.71s16.71-7.8 16.71-16.71v-33.98h117v94.15c0 9.47 7.8 17.27 17.27 17.27h94.16v206.14h-22.85c-9.47 0-16.71 7.24-16.71 16.71s7.8 16.71 16.71 16.71h42.34c9.47 0 13.93-8.36 13.93-17.83v-254.04c0.01-4.46-0.55-8.91-3.34-12.26zm-108.08-61.28 71.87 72.43h-71.87v-72.43z"/>
+</svg>
+					Copy data to Clipboard
+				</button>
+			</div>
+		</div>
+
+
+
+		<!--div>
+	<label for="custonRName3">Set filter</label>
+	<input type="text" id="custonRName3" minlength="4" size="20" />
+	</div-->
+
+		<div class="table-container">
+			<table id="idTable1Word" class="sortable show-unsorted-icon modern-table">
+				<thead>
+					<tr id="Table1WordHeader" class="header">
+						<th class="num">
+							<button>
+								Row #
+								<span aria-hidden="true"></span>
+							</button>
+						</th>
+						<th title="All Single Words Within the Search Queries">1-gram</th>
+						<th class="num" title="Frequency of the n-gram in search queries">
+							<button>
+								1-gram count
+								<span aria-hidden="true"></span>
+							</button>
+						</th>
+						<th aria-sort="descending" class="num"
+							title="Sum of clicks of all search queries containing the n-gram">
+							<button>
+								Clicks
+								<span aria-hidden="true"></span>
+							</button>
+						</th>
+						<th class="num" title="Sum of impressions of all search queries containing the n-gram">
+							<button>
+								Impressions
+								<span aria-hidden="true"></span>
+							</button>
+						</th>
+						<th class="num" title="This CTR Is a Calculated Value">
+							<button>
+								CTR
+								<span aria-hidden="true"></span>
+							</button>
+						</th>
+						<th title="Filter 'ByQuery' for queries with the 1-gram">Filter</th>
+						<th class="num"
+							title="Shows the relative importance of an n-gram based on clicks. It is calculated as the 'sum of clicks for the n-gram' divided by the 'total sum of clicks in the table.' The data is derived from the maximum of 1,000 search queries provided by the Google Search Console (GSC) interface">
+							<button>
+								Clicks Share
+								<span aria-hidden="true"></span>
+							</button>
+						</th>
+						<th class="num"
+							title="Shows the relative importance of an n-gram based on impressions. It is calculated as the 'sum of impressions for the n-gram' divided by the 'total sum of impressions in the table.' The data is derived from the maximum of 1,000 search queries provided by the Google Search Console (GSC) interface">
+							<button>
+								Impressions Share
+								<span aria-hidden="true"></span>
+							</button>
+						</th>
+
+						<!--th title="Clicks Share">Clicks Share</th>	
+					<th title="Impressions Share">Impressions Share</th-->
+					</tr>
+				</thead>
+				<tbody id="idTable1WordBody">
+				</tbody>
+			</table>
+
+		</div>
+	</div>
+
+	<div id="idTab2" class="tab-content">
+		<div id="idDownload2" class="download-container">
+			<div class="container">
+				<div class="buttonContainer">
+					<button id="idSaveCSV2Gram" class="buttonSaveCSV" type="button">
+						<svg viewBox="0 0 20 20" fill="currentColor" width="12" height="12" class="mr-2">
+							<path fill-rule="evenodd"
+								d="M6 2a2 2 0 00-2 2v12a2 2 0 002 2h8a2 2 0 002-2V7.414A2 2 0 0015.414 6L12 2.586A2 2 0 0010.586 2H6zm5 6a1 1 0 10-2 0v3.586l-1.293-1.293a1 1 0 10-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L11 11.586V8z"
+								clip-rule="evenodd"></path>
+						</svg>
+						Save table as CSV
+					</button>
+					<button id="idCopyToClipboard2Gram" class="buttonCopyToClipboard" type="button">
+						<svg enable-background="new 0 0 512 512" version="1.1" viewBox="0 0 512 512" xml:space="preserve" xmlns="http://www.w3.org/2000/svg">
+							<path d="m256 122.01c-3.9-3.9-8.92-5.01-13.93-5.01h-166.58c-11.14 0-25.63 6.69-25.63 17.27v352.66c0 11.14 14.48 25.07 25.63 25.07h264.08c11.14 0 16.71-14.49 16.71-25.07v-254.05c0-5.01-0.56-9.47-4.46-13.37l-95.82-97.5zm55.15 111.98h-71.87v-71.87l71.87 71.87zm-216.72 233.99v-311.99h105.85v95.83c0 11.14 10.03 21.17 21.17 21.17h95.83v194.99h-222.85zm364.36-367.7-96.94-96.94c-3.34-2.78-6.68-3.34-11.14-3.34h-166.58c-9.47 0-17.27 5.01-17.27 13.93v53.48c0 9.47 7.24 16.71 16.71 16.71s16.71-7.8 16.71-16.71v-33.98h117v94.15c0 9.47 7.8 17.27 17.27 17.27h94.16v206.14h-22.85c-9.47 0-16.71 7.24-16.71 16.71s7.8 16.71 16.71 16.71h42.34c9.47 0 13.93-8.36 13.93-17.83v-254.04c0.01-4.46-0.55-8.91-3.34-12.26zm-108.08-61.28 71.87 72.43h-71.87v-72.43z"/>
+						</svg>
+						Copy data to Clipboard
+					</button>
+				</div>
+			</div>
+		</div>
+
+		<div class="table-container">
+			<table id="idTable2Words" class="sortable show-unsorted-icon modern-table">
+				<thead>
+					<tr id="Table2WordsHeader" class="header">
+						<th class="num">
+							<button>
+								Row #
+								<span aria-hidden="true"></span>
+							</button>
+						</th>
+						<th title="All Two Word Combinations Within the Search Queries">2-gram</th>
+						<th class="num" title="Frequency of the n-gram in search queries">
+							<button>
+								2-gram count
+								<span aria-hidden="true"></span>
+							</button>
+						</th>
+						<th aria-sort="descending" class="num"
+							title="Sum of clicks of all search queries containing the n-gram">
+							<button>
+								Clicks
+								<span aria-hidden="true"></span>
+							</button>
+						</th>
+						<th class="num" title="Sum of impressions of all search queries containing the n-gram">
+							<button>
+								Impressions
+								<span aria-hidden="true"></span>
+							</button>
+						</th>
+						<th class="num">
+							<button>
+								CTR
+								<span aria-hidden="true"></span>
+							</button>
+						</th>
+						<th title="Filter 'ByQuery' for queries with the 2-gram">Filter</th>
+						<th class="num"
+							title="Shows the relative importance of an n-gram based on clicks. It is calculated as the 'sum of clicks for the n-gram' divided by the 'total sum of clicks in the table.' The data is derived from the maximum of 1,000 search queries provided by the Google Search Console (GSC) interface">
+							<button>
+								Clicks Share
+								<span aria-hidden="true"></span>
+							</button>
+						</th>
+						<th class="num"
+							title="Shows the relative importance of an n-gram based on impressions. It is calculated as the 'sum of impressions for the n-gram' divided by the 'total sum of impressions in the table.' The data is derived from the maximum of 1,000 search queries provided by the Google Search Console (GSC) interface">
+							<button>
+								Impressions Share
+								<span aria-hidden="true"></span>
+							</button>
+						</th>
+
+						<!--th title="Clicks Share">Clicks Share</th>	
+					<th title="Impressions Share">Impressions Share</th-->
+					</tr>
+				</thead>
+				<tbody id="idTable2WordsBody">
+				</tbody>
+			</table>
+
+		</div>
+	</div>
+
+	<div id="idTab3" class="tab-content">
+		<div id="idDownload3" class="download-container">
+			<div class="container">
+				<div class="buttonContainer">
+					<button id="idSaveCSV3Gram" class="buttonSaveCSV" type="button">
+						<svg viewBox="0 0 20 20" fill="currentColor" width="12" height="12" class="mr-2">
+							<path fill-rule="evenodd"
+								d="M6 2a2 2 0 00-2 2v12a2 2 0 002 2h8a2 2 0 002-2V7.414A2 2 0 0015.414 6L12 2.586A2 2 0 0010.586 2H6zm5 6a1 1 0 10-2 0v3.586l-1.293-1.293a1 1 0 10-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L11 11.586V8z"
+								clip-rule="evenodd"></path>
+						</svg>
+						Save table as CSV
+					</button>
+					<button id="idCopyToClipboard3Gram" class="buttonCopyToClipboard" type="button">
+						<svg enable-background="new 0 0 512 512" version="1.1" viewBox="0 0 512 512" xml:space="preserve" xmlns="http://www.w3.org/2000/svg">
+							<path d="m256 122.01c-3.9-3.9-8.92-5.01-13.93-5.01h-166.58c-11.14 0-25.63 6.69-25.63 17.27v352.66c0 11.14 14.48 25.07 25.63 25.07h264.08c11.14 0 16.71-14.49 16.71-25.07v-254.05c0-5.01-0.56-9.47-4.46-13.37l-95.82-97.5zm55.15 111.98h-71.87v-71.87l71.87 71.87zm-216.72 233.99v-311.99h105.85v95.83c0 11.14 10.03 21.17 21.17 21.17h95.83v194.99h-222.85zm364.36-367.7-96.94-96.94c-3.34-2.78-6.68-3.34-11.14-3.34h-166.58c-9.47 0-17.27 5.01-17.27 13.93v53.48c0 9.47 7.24 16.71 16.71 16.71s16.71-7.8 16.71-16.71v-33.98h117v94.15c0 9.47 7.8 17.27 17.27 17.27h94.16v206.14h-22.85c-9.47 0-16.71 7.24-16.71 16.71s7.8 16.71 16.71 16.71h42.34c9.47 0 13.93-8.36 13.93-17.83v-254.04c0.01-4.46-0.55-8.91-3.34-12.26zm-108.08-61.28 71.87 72.43h-71.87v-72.43z"/>
+						</svg>
+						Copy data to Clipboard
+					</button>
+				</div>
+			</div>
+		</div>
+
+		<div class="table-container">
+			<table id="idTable3Words" class="sortable show-unsorted-icon modern-table">
+				<thead>
+					<tr id="Table3WordsHeader" class="header">
+						<th class="num">
+							<button>
+								Row #
+								<span aria-hidden="true"></span>
+							</button>
+						</th>
+						<th title="All Three Word Combinations Within the Search Queries">3-gram</th>
+						<th class="num" title="Frequency of the n-gram in search queries">
+							<button>
+								3-gram count
+								<span aria-hidden="true"></span>
+							</button>
+						</th>
+						<th aria-sort="descending" class="num"
+							title="Sum of clicks of all search queries containing the n-gram">
+							<button>
+								Clicks
+								<span aria-hidden="true"></span>
+							</button>
+						</th>
+						<th class="num" title="Sum of impressions of all search queries containing the n-gram">
+							<button>
+								Impressions
+								<span aria-hidden="true"></span>
+							</button>
+						</th>
+						<th class="num">
+							<button>
+								CTR
+								<span aria-hidden="true"></span>
+							</button>
+						</th>
+						<th title="Filter 'ByQuery' for queries with the 2-gram">Filter</th>
+						<th class="num"
+							title="Shows the relative importance of an n-gram based on clicks. It is calculated as the 'sum of clicks for the n-gram' divided by the 'total sum of clicks in the table.' The data is derived from the maximum of 1,000 search queries provided by the Google Search Console (GSC) interface">
+							<button>
+								Clicks Share
+								<span aria-hidden="true"></span>
+							</button>
+						</th>
+						<th class="num"
+							title="Shows the relative importance of an n-gram based on impressions. It is calculated as the 'sum of impressions for the n-gram' divided by the 'total sum of impressions in the table.' The data is derived from the maximum of 1,000 search queries provided by the Google Search Console (GSC) interface">
+							<button>
+								Impressions Share
+								<span aria-hidden="true"></span>
+							</button>
+						</th>
+
+						<!--th title="Clicks Share">Clicks Share</th>	
+					<th title="Impressions Share">Impressions Share</th-->
+					</tr>
+				</thead>
+				<tbody id="idTable3WordsBody">
+				</tbody>
+			</table>
+
+		</div>
+	</div>
+
+	<script type="text/javascript" src="byQuery.js"></script>
+	<script type="text/javascript" src="sortabletable.js"></script>
+
+</body>
+
+</html>
